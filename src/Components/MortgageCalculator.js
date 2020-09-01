@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {Bootstrap, Grid, Row, Col} from 'react-bootstrap';
 import mortgageCalc from '../Img/mortgageCalc.jpg';
 import questionMark from '../Img/question-mark.png';
+import Summary from './Summary';
 
 export class MortgageCalculator extends Component {
     render() {
@@ -165,12 +166,22 @@ export class MortgageCalculator extends Component {
                                 </div>
                             </header>
 
-                        </section></Col>
+                        </section>
+                        </Col>
+                        <Col lg={8} md="auto" sm={12}> 
+                        <Row>
+                        <div>
+                        <input type= "submit" value="Calculate..." style={CalcButton}/>
+                        </div>
+                        </Row>
+                        </Col>
                     </Row>
-                    <div>
-                        <input type= "submit" value="Calculate" style={CalcButton}/>
-                    </div>
-                
+                    <Row  className="justify-content-center">
+                        <Col lg={8}><Summary></Summary></Col>    
+                    </Row>
+
+                   
+
             </div>
         )
     }
@@ -226,7 +237,9 @@ const cardTitle ={
 }
 const CalcButton= {
     backgroundColor: '#335075',
-    color:'white'
+    color:'white',
+    marginBottom: '10px',
+    marginTop: '10px'
 }
 
 export default MortgageCalculator
