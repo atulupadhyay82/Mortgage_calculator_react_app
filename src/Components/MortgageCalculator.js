@@ -56,6 +56,9 @@ export class MortgageCalculator extends Component {
     }
 
     calculatePayment = () =>{
+        this.setState({
+            noOfPayementsTerm: this.state.term * this.state.paymentFrequency
+        })
         let loanAmount=this.state.mortgageAmount
         let months=this.state.amortizationPeriod * 12
         let monthlyRate= this.state.interestRate / 1200
