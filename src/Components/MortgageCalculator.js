@@ -19,9 +19,12 @@ export class MortgageCalculator extends Component {
             monthlyInterestRate:'',
             termMonths:'',
             monthlyRate:'',
-            monthlyPayment:''
+            monthlyPayment:'',
+            noOfPayementsTerm:'',
+            summaryAmortPeriod:''
         }
     }
+
     onChangeMortgageAmount = (e) => {
         this.setState({
             mortgageAmount : e.target.value
@@ -39,13 +42,65 @@ export class MortgageCalculator extends Component {
         })
         console.log("amortizationPeriod",this.state.amortizationPeriod);
     }
-
-    calculateMonthlyPIPayment = () => {
+    onChangePaymentFrequency = (e) => {
         this.setState({
-            //monthlyInterestRate: this.state.interestRate/100,
+            paymentFrequency : e.target.value
+    })
+    console.log("amortizationPeriod",this.state.amortizationPeriod);
+    }
+    onChangeTerm = (e) => {
+    this.setState({
+        term : e.target.value
+    })
+    console.log("amortizationPeriod",this.state.amortizationPeriod);
+    }
+
+    calculatePaymentSchedule = () => {
+        const monthlyRate = this.state.interestRate / 1200
+        let i=0
+        let additionalPrincipalPayments = 0
+        let monthlyPayment=this.calculateMonthlyPIPayment()
+        let principal=this.state.mortgageAmount
+        let totalInterest=0
+        let totalPayments=0
+        let payments = []
+        while (principal > 0 && i < (this.state.amortizationPeriod * 12)) {
+            let interestPayment = principal * monthlyRate;
+            let principalPayment = monthlyPayment - interestPayment + additionalPrincipalPayments;
+            if (this.state.mortgageAmount > principalPayment) {
+                this.setState({
+                    mortgageAmount: principal - principalPayment
+                }) 
+            }
+            else {
+                principalPayment = principal;
+                this.setState({
+                    principal:0
+                }) 
+            }
+            let totalPayment = interestPayment + principalPayment; 
+            totalInterest += interestPayment;
+            totalPayments += totalPayment;
+            payments[i] = {
+                count: i+1,
+                interestPayment: interestPayment,
+                totalInterest: totalInterest,
+                principalPayment: principalPayment,
+                totalPayment: totalPayment,
+                totalPayments: totalPayments,
+                balance: this.state.mortgageAmount
+            };
+            i++;
+        }
+        console.log("payments array", payments);
+       }
+    calculateMonthlyPIPayment = () => {
+        
+        this.setState({
             termMonths: this.state.amortizationPeriod * 12,
             monthlyRate: this.state.interestRate / 1200,
-            //monthlyPayment: this.state.monthlyRate * this.state.mortgageAmount* Math.pow(1 + this.state.monthlyRate, this.state.termMonths),
+            noOfPayementsTerm: this.state.paymentFrequency * this.state.term,
+            summaryAmortPeriod: this.state.amortizationPeriod * this.state.paymentFrequency,
            
         }, () => {
             this.setState({
@@ -143,13 +198,13 @@ export class MortgageCalculator extends Component {
                                         <label className= "card-text"><strong>Payment Frequency:</strong></label>
                                         </div>
                                         <div>
-                                        <select className= "form-control">
+                                        <select  value= {this.state.paymentFrequency} onChange= {this.onChangePaymentFrequency} className= "form-control">
                                                {/* the data can come from an array described in state  */}
-                                               <option>Accelarated Weekly</option>
-                                               <option>Accelarated Biweekly</option>
-                                               <option>Bi Weekly</option>
-                                               <option>Semi Weekly</option>
-                                               <option>Monthly</option>
+                                               <option value="52">Weekly</option>
+                                               <option value="26">Accelarated Biweekly</option>
+                                               <option value="26">Bi Weekly</option>
+                                               <option value="24">Semi Monthly</option>
+                                               <option value="12">Monthly</option>
 
                                         </select>
                                         </div>
@@ -162,10 +217,13 @@ export class MortgageCalculator extends Component {
                                         <label className= "card-text"><strong>Term:</strong></label>
                                         </div>
                                         <div>
-                                        <select className= "form-control">
+                                        <select className= "form-control" value={this.state.term} onChange={this.onChangeTerm}>
                                                {/* the data can come from an array described in state  */}
-                                               <option>1 Year</option>
-                                               <option>2 Year</option>
+                                               <option value="1">1 Year</option>
+                                               <option value="2">2 Year</option>
+                                               <option value="3">3 Year</option>
+                                               <option value="4">4 Year</option>
+                                               <option value="5">5 Year</option>
                                         </select>
                                         </div>
                                     </div>
@@ -230,14 +288,20 @@ export class MortgageCalculator extends Component {
                         <Col lg={8} md="auto" sm={12}> 
                         <Row>
                         <div>
-                        <input type= "submit" value="Calculate..." onClick={this.calculateMonthlyPIPayment} style={CalcButton}/>
+                        <input type= "submit" value="Calculate..." onClick={this.calculatePaymentSchedule} style={CalcButton}/>
                         <div>{this.state.monthlyPayment}</div>
                         </div>
                         </Row>
                         </Col>
                     </Row>
                     <Row  className="justify-content-center">
-                        <Col lg={8}><Summary monthlyPayment= {this.state.monthlyPayment}></Summary></Col>    
+                        <Col lg={8}>
+                            <Summary 
+                            monthlyPayment= {this.state.monthlyPayment}
+                            noOfPayementsTerm= {this.state.noOfPayementsTerm}
+                            summaryAmortPeriod= {this.state.summaryAmortPeriod}
+                            ></Summary>
+                            </Col>    
                     </Row>
 
                    
