@@ -45,7 +45,7 @@ export class Summary extends Component {
                             <tr>
                             <td>Total Cost</td>
                             <td>Some value</td>
-                            <td>Sample value</td>
+        <td>{this.props.monthlyPayment}</td>
                             </tr>
                         </tbody>
                     </Table>

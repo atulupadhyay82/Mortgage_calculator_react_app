@@ -5,6 +5,64 @@ import questionMark from '../Img/question-mark.png';
 import Summary from './Summary';
 
 export class MortgageCalculator extends Component {
+    constructor(){
+        super()
+        this.state = {
+            mortgageAmount: '',
+            interestRate: '',
+            amortizationPeriod: '',
+            paymentFrequency:'',
+            term:1,
+            prePaymentAmount:'',
+            prePayementFrequency: '',
+            startPayemnt:1,
+            monthlyInterestRate:'',
+            termMonths:'',
+            monthlyRate:'',
+            monthlyPayment:''
+        }
+    }
+    onChangeMortgageAmount = (e) => {
+        this.setState({
+            mortgageAmount : e.target.value
+        })
+        console.log("mortgageAmount",this.state.mortgageAmount);
+    }
+    onChangeInterestRate = (e) => {
+        this.setState({
+            interestRate : e.target.value
+        })
+    }
+    onChangeAmortizationPeriod = (e) => {
+            this.setState({
+                amortizationPeriod : e.target.value
+        })
+        console.log("amortizationPeriod",this.state.amortizationPeriod);
+    }
+
+    calculateMonthlyPIPayment = () => {
+        this.setState({
+            //monthlyInterestRate: this.state.interestRate/100,
+            termMonths: this.state.amortizationPeriod * 12,
+            monthlyRate: this.state.interestRate / 1200,
+            //monthlyPayment: this.state.monthlyRate * this.state.mortgageAmount* Math.pow(1 + this.state.monthlyRate, this.state.termMonths),
+           
+        }, () => {
+            this.setState({
+                monthlyPayment: (this.state.monthlyRate * this.state.mortgageAmount)* 
+                Math.pow(1 + this.state.monthlyRate, this.state.termMonths) / (Math.pow(1 + this.state.monthlyRate, this.state.termMonths)-1)
+            })
+        })
+        console.log("monthlyInterestRate",this.state.monthlyInterestRate);
+        console.log("termMonths",this.state.termMonths);
+        console.log("monthlyRate",this.state.monthlyRate);
+       //let sum = eval('1 + 1')
+      
+        console.log("monthlyPayment", this.state.monthlyPayment);
+        return (this.state.monthlyPayment);
+    }
+    
+    
     render() {
         return (
             <div>
@@ -39,7 +97,7 @@ export class MortgageCalculator extends Component {
                                         </div>
                                         <div>
                                         <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text" placeholder="100,000.00" maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
+                                        <input type="text" placeholder="100,000.00" value = {this.state.mortgageAmount}  onChange= {this.onChangeMortgageAmount} maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
                                         </div>
                                     </div>
                                     </Row>
@@ -51,7 +109,7 @@ export class MortgageCalculator extends Component {
                                         </div>
                                         <div>
                                         <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text"  placeholder="5.00f em" maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
+                                        <input type="text"  placeholder="5.00f em" value = {this.state.interestRate} onChange= {this.onChangeInterestRate} maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
                                         </div>
                                     </div>
                                     </Row>
@@ -63,16 +121,17 @@ export class MortgageCalculator extends Component {
                                         </div>
                                         <div>
                                        <div>
-                                           <select className= "form-control">
+                                           <select className= "form-control" value= {this.state.amortizationPeriod} onChange= {this.onChangeAmortizationPeriod}>
                                                {/* the data can come from an array described in state  */}
-                                               <option>1 year</option>
-                                               <option>2 year</option>
+                                               <option value="1">1 year</option>
+                                               <option value="5">5 year</option>
+                                               <option value="15">15 year</option>
                                            </select>
-                                           <select className= "form-control">
+                                           {/* <select className= "form-control"> */}
                                                {/* the data can come from an array described in state  */}
-                                               <option>1 month</option>
-                                               <option>2 month</option>
-                                           </select>
+                                               {/* <option>1 month</option> */}
+                                               {/* <option>2 month</option> */}
+                                           {/* </select> */}
                                        </div>
                                         </div>
                                     </div>
@@ -171,13 +230,14 @@ export class MortgageCalculator extends Component {
                         <Col lg={8} md="auto" sm={12}> 
                         <Row>
                         <div>
-                        <input type= "submit" value="Calculate..." style={CalcButton}/>
+                        <input type= "submit" value="Calculate..." onClick={this.calculateMonthlyPIPayment} style={CalcButton}/>
+                        <div>{this.state.monthlyPayment}</div>
                         </div>
                         </Row>
                         </Col>
                     </Row>
                     <Row  className="justify-content-center">
-                        <Col lg={8}><Summary></Summary></Col>    
+                        <Col lg={8}><Summary monthlyPayment= {this.state.monthlyPayment}></Summary></Col>    
                     </Row>
 
                    
