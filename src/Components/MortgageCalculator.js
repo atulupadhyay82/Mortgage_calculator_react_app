@@ -55,66 +55,69 @@ export class MortgageCalculator extends Component {
     console.log("amortizationPeriod",this.state.amortizationPeriod);
     }
 
-    calculatePaymentSchedule = () => {
-        const monthlyRate = this.state.interestRate / 1200
-        let i=0
-        let additionalPrincipalPayments = 0
-        let monthlyPayment=this.calculateMonthlyPIPayment()
-        let principal=this.state.mortgageAmount
+    calculatePayment = () =>{
+        let loanAmount=this.state.mortgageAmount
+        let months=this.state.amortizationPeriod * 12
+        let monthlyRate= this.state.interestRate / 1200
+        let paymentSchedule = this.calculatePaymentSchedule(loanAmount, monthlyRate, months)
+        let piPayment = paymentSchedule.length ? paymentSchedule[0].totalPayment : 0   
+        return {
+            loanAmount: loanAmount,
+            principalAndInterest: piPayment,
+            termMonths: months,
+            paymentSchedule: paymentSchedule
+        };
+    }
+
+    calculatePaymentSchedule = (loanAmount, monthlyRate, months) => {
+        // console.log("loan",loanAmount);
+        // console.log("monthlyRate",monthlyRate);
+        // console.log("months",months);
+   
+        let monthlyPayment=this.calculateMonthlyPIPayment(loanAmount, monthlyRate, months)
+        console.log("monthly payment", monthlyPayment)
+        let principal=loanAmount
+        console.log("principal", principal)
         let totalInterest=0
         let totalPayments=0
+        let totalPrincipal=0
+        let i=0
         let payments = []
-        while (principal > 0 && i < (this.state.amortizationPeriod * 12)) {
-            let interestPayment = principal * monthlyRate;
-            let principalPayment = monthlyPayment - interestPayment + additionalPrincipalPayments;
-            if (this.state.mortgageAmount > principalPayment) {
-                this.setState({
-                    mortgageAmount: principal - principalPayment
-                }) 
+
+        while (principal > 0 && i < (months)) {
+            let interestPayment = principal * monthlyRate
+            let principalPayment = monthlyPayment - interestPayment 
+            if (principal > principalPayment) {
+                principal= principal - principalPayment
             }
             else {
-                principalPayment = principal;
-                this.setState({
-                    principal:0
-                }) 
+                principalPayment = principal
+                principal=0
             }
             let totalPayment = interestPayment + principalPayment; 
             totalInterest += interestPayment;
-            totalPayments += totalPayment;
+            totalPrincipal +=principalPayment;
+            totalPayments +=totalPayment
             payments[i] = {
                 count: i+1,
-                interestPayment: interestPayment,
-                totalInterest: totalInterest,
-                principalPayment: principalPayment,
-                totalPayment: totalPayment,
-                totalPayments: totalPayments,
-                balance: this.state.mortgageAmount
+                monthlyInterestPayment: interestPayment,
+                totalInterestPaid: totalInterest,
+                monthlyPrincipalPayment: principalPayment,
+                mortgagePayment: totalPayment,
+                totalPrincipalPaid: totalPrincipal,
+                totalMortgagePaid: totalPayments,
+                balance: principal
             };
             i++;
         }
         console.log("payments array", payments);
-       }
-    calculateMonthlyPIPayment = () => {
-        
-        this.setState({
-            termMonths: this.state.amortizationPeriod * 12,
-            monthlyRate: this.state.interestRate / 1200,
-            noOfPayementsTerm: this.state.paymentFrequency * this.state.term,
-            summaryAmortPeriod: this.state.amortizationPeriod * this.state.paymentFrequency,
-           
-        }, () => {
-            this.setState({
-                monthlyPayment: (this.state.monthlyRate * this.state.mortgageAmount)* 
-                Math.pow(1 + this.state.monthlyRate, this.state.termMonths) / (Math.pow(1 + this.state.monthlyRate, this.state.termMonths)-1)
-            })
-        })
-        console.log("monthlyInterestRate",this.state.monthlyInterestRate);
-        console.log("termMonths",this.state.termMonths);
-        console.log("monthlyRate",this.state.monthlyRate);
-       //let sum = eval('1 + 1')
-      
-        console.log("monthlyPayment", this.state.monthlyPayment);
-        return (this.state.monthlyPayment);
+        return payments;
+    }
+    calculateMonthlyPIPayment = (loanAmount, monthlyRate, termMonths) => {
+             
+        let monthlyPayment = (monthlyRate * loanAmount * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+      //  console.log("monthlyPayment", monthlyPayment);
+        return monthlyPayment;
     }
     
     
@@ -288,7 +291,7 @@ export class MortgageCalculator extends Component {
                         <Col lg={8} md="auto" sm={12}> 
                         <Row>
                         <div>
-                        <input type= "submit" value="Calculate..." onClick={this.calculatePaymentSchedule} style={CalcButton}/>
+                        <input type= "submit" value="Calculate..." onClick={this.calculatePayment} style={CalcButton}/>
                         <div>{this.state.monthlyPayment}</div>
                         </div>
                         </Row>
