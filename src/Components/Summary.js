@@ -20,27 +20,27 @@ export class Summary extends Component {
                             <tr>
                             <td>Number of Payments</td>
                             <td>{this.props.noOfPayementsTerm}</td>
-                            <td>{this.props.summaryAmortPeriod}</td>
+                            <td>{this.props.noOfPaymentAmortPeriod}</td>
                             </tr>
                             <tr>
                             <td>Mortgage Payment</td>
-                            <td>{this.props.monthlyPayment}</td>
-                            <td>{this.props.monthlyPayment}</td>
+                            <td>{this.props.mortgagePayment}</td>
+                            <td>{this.props.mortgagePayment}</td>
                             </tr>
                             <tr>
                             <td>Principal Payments</td>
-                            <td>Some value</td>
-                            <td>Sample value</td>
+                            <td>{this.props.termPrincipalPayments}</td>
+                            <td>{this.props.amortPrincipalPayemnets}</td>
                             </tr>
                             <tr>
                             <td>Interest Payments</td>
-                            <td>Some value</td>
-                            <td>Sample value</td>
+                            <td>{this.props.termInterestPayements}</td>
+                            <td>{this.props.amortInterestPayements}</td>
                             </tr>
                             <tr>
                             <td>Total Cost</td>
-                            <td>Some value</td>
-                            <td>{}</td>
+                            <td>{this.props.termTotalCost}</td>
+                            <td>{this.props.amortTotalCost}</td>
                             </tr>
                         </tbody>
                     </Table>
