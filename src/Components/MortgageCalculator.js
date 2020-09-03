@@ -3,10 +3,13 @@ import {Bootstrap, Grid, Row, Col} from 'react-bootstrap';
 import mortgageCalc from '../Img/mortgageCalc.jpg';
 import questionMark from '../Img/question-mark.png';
 import Summary from './Summary';
+import CalculatorLogic from '../CalculatorLogic';
 
 export class MortgageCalculator extends Component {
+   
     constructor(){
         super()
+
         this.state = {
             mortgageAmount: '',
             interestRate: '',
@@ -21,7 +24,21 @@ export class MortgageCalculator extends Component {
             monthlyRate:'',
             monthlyPayment:'',
             noOfPayementsTerm:'',
-            summaryAmortPeriod:''
+            noOfPaymentAmortPeriod:'',
+            paymentSchedule: CalculatorLogic.paymentSchedule,
+            loanAmount:'',
+            monthlyRate:'',
+            months:'',
+            mortgagePayment:'',
+            termPrincipalPayments: '',
+            amortPrincipalPayemnets:'',
+            termInterestPayements: '',
+            amortInterestPayements: '',
+            termTotalCost:'',
+            amortTotalCost:''
+
+
+            //calculatePaymentSchedule:Algorithm.calculatePaymentSchedule
         }
     }
 
@@ -55,166 +72,66 @@ export class MortgageCalculator extends Component {
     console.log("amortizationPeriod",this.state.amortizationPeriod);
     }
 
-    calculatePayment = () =>{
-        this.setState({
-            noOfPayementsTerm: this.state.term * this.state.paymentFrequency
-        })
-        let loanAmount=this.state.mortgageAmount
-        let months=this.state.amortizationPeriod * 12
-        let monthlyRate= this.state.interestRate / 1200
-        let paymentSchedule = this.calculatePaymentScheduleWise(loanAmount, monthlyRate, months,"regular_weekly")
-        let piPayment = paymentSchedule.length ? paymentSchedule[0].totalPayment : 0   
-        return {
-            loanAmount: loanAmount,
-            principalAndInterest: piPayment,
-            termMonths: months,
-            paymentSchedule: paymentSchedule
-        };
-    }
-
-    calculate_Regular_Bi_Weekly_Payment = (monthlyPayment) => {
-        let regular_BiWeekly_Payment = (monthlyPayment * 12) /26
-        return this.roundToXDigits(regular_BiWeekly_Payment,2);
-    }
-
-    calculate_Acclerated_Bi_Weekly_Payment = (monthlyPayment) => {
-        let acclerated_BiWeekly_Payment = (monthlyPayment ) /2
-        console.log("mortgagePayment",acclerated_BiWeekly_Payment);
-        return this.roundToXDigits(acclerated_BiWeekly_Payment,2);
-    }
-
-    calculate_Acclerated_Weekly_Payment = (monthlyPayment) => {
-        let acclerated_Weekly_Payment = (monthlyPayment ) /4
-        return this.roundToXDigits(acclerated_Weekly_Payment,2);
-    }
-
-    calculate_Regular_Weekly_Payment = (monthlyPayment) => {
-        let regular_Weekly_Payment = (monthlyPayment * 12) /52
-        return this.roundToXDigits(regular_Weekly_Payment,2);
-    }
-    calculate_Acclerated_Weekly_Payment = (monthlyPayment) => {
-        let acclerated_Weekly_Payment = (monthlyPayment ) /4
-        return this.roundToXDigits(acclerated_Weekly_Payment,2);
-    }
-
-    calculate_semi_monthly_Payment = (monthlyPayment) => {
-        let semi_Monthly_Payment = (monthlyPayment ) /2
-        return this.roundToXDigits(semi_Monthly_Payment,2);
-    }
-
-    roundToXDigits = (value, digits) =>{
-        if(!digits){
-            digits = 2;
-        }
-        value = value * Math.pow(10, digits);
-        value = Math.round(value);
-        value = value / Math.pow(10, digits);
-        return value;
-    }
-
-    calculatePaymentScheduleWise = (loanAmount, monthlyRate, months, paymentFrequency) => {
-        let monthlyPayment=this.calculateMonthlyPIPayment(loanAmount, monthlyRate, months)
-        switch(paymentFrequency){
-            case 'monthly':
-               return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,monthlyPayment,"monthly");
-            case 'regular_biweekly':
-                let regular_BiWeekly_Payment= this.calculate_Regular_Bi_Weekly_Payment(monthlyPayment)
-                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,regular_BiWeekly_Payment,"regular_biweekly");
-            case 'acclerated_biweekly':
-                let acclerated_BiWeekly_Payment= this.calculate_Acclerated_Bi_Weekly_Payment(monthlyPayment)
-                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,acclerated_BiWeekly_Payment,"acclerated_biweekly");
-            case 'semi_monthly':
-                let semi_Monthly_Payment= this.calculate_semi_monthly_Payment(monthlyPayment)
-                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,semi_Monthly_Payment,"semi_monthly");
-            case 'regular_weekly':
-                let regular_Weekly_Payment= this.calculate_Regular_Weekly_Payment(monthlyPayment)
-                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,regular_Weekly_Payment,"regular_weekly");
-            case 'acclerated_weekly':
-                let acclerated_Weekly_Payment= this.calculate_Acclerated_Weekly_Payment(monthlyPayment)
-                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,acclerated_Weekly_Payment,"acclerated_weekly");
-        }       
-    }
-    calculateMonthlyPaymentSchedule = (loanAmount, monthlyRate, months, mortgagePayment, paymentFrequency) => {
-        // console.log("loan",loanAmount);
-        // console.log("monthlyRate",monthlyRate);
-        //console.log("months",months);
-        console.log("mortgage payment",mortgagePayment);
-        let loopCounter=months
-        let interestDivider=1
+    paymentFrequencyCount=(paymentFrequency) =>{
         switch(paymentFrequency){
 
             case "monthly":
-                loopCounter= loopCounter * 12
-                interestDivider=1
-                break
+                return 12
             case "semi_monthly":
-                loopCounter=loopCounter * 24
-                interestDivider=1/2
-                break
+                return 24
             case "regular_biweekly":
-                loopCounter= loopCounter * 26
-                interestDivider= 12/26
-                break
+                return 26
             case "acclerated_biweekly":
-                loopCounter= loopCounter * 26
-                interestDivider= 12/26
-                break
+                return 26
             case "regular_weekly":
-                loopCounter= loopCounter * 52
-                interestDivider= 12/52
-                break
+                return 52                
             case "acclerated_weekly":
-                loopCounter= loopCounter * 52
-                interestDivider= 12/52
-                break
-
+                return 52
         }
-   
-        let principal=loanAmount
-        console.log("principal", principal)
-        let totalInterest=0
-        let totalPayments=0
-        let totalPrincipal=0
-        let i=0
-        let payments = []
+
+    }
+
+    calculateMortgage = (mortgagenAmount, interestRate, amortizationPeriod,paymentFrequency) =>{ 
+        let mortgageParameters=CalculatorLogic.calculatePayment(mortgagenAmount, interestRate, amortizationPeriod,paymentFrequency) 
+        let termCount= this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
+        let amortCount = mortgageParameters.paymentSchedule.length      
+
+         this.setState({
+            noOfPayementsTerm: this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
+        })
+        // this.setState({
+        //     noOfPaymentAmortPeriod: this.state.amortizationPeriod * this.paymentFrequencyCount(this.state.paymentFrequency)
+        // })
+
+        this.setState({
+            noOfPaymentAmortPeriod:amortCount
+        })
+       
         
+        
+       
+        console.log("term count",termCount);  
+        console.log("amort count", amortCount);
+                this.state.termPrincipalPayments = mortgageParameters.paymentSchedule[termCount-1].totalPrincipalPaid
+                console.log("totalPrincipalPaid",this.state.termPrincipalPayments);
+            
+           
+                this.state.amortPrincipalPayemnets = mortgageParameters.paymentSchedule[amortCount-1].totalPrincipalPaid
+            
+                this.state.termInterestPayements = mortgageParameters.paymentSchedule[termCount-1].totalInterestPaid
+            
+           
+                this.state.amortInterestPayements = mortgageParameters.paymentSchedule[amortCount-1].totalInterestPaid
+            
+                this.state.termTotalCost = mortgageParameters.paymentSchedule[termCount-1].totalMortgagePaid
 
-        while (principal > 0 && i < (loopCounter)) {
-            let interestPayment = this.roundToXDigits((principal * monthlyRate) * interestDivider,2)
-            let principalPayment = this.roundToXDigits(mortgagePayment - interestPayment,2) 
-            if (principal > principalPayment) {
-                principal= this.roundToXDigits(principal - principalPayment,2)
-            }
-            else {
-                principalPayment = principal
-                principal=0
-            }
-            let totalPayment = this.roundToXDigits( interestPayment + principalPayment,2)
-            totalInterest = this.roundToXDigits(totalInterest+ interestPayment ,2)
-            totalPrincipal = this.roundToXDigits(totalPrincipal+ principalPayment,2)
-            totalPayments = this.roundToXDigits(totalPayments+ totalPayment,2)
-            payments[i] = {
-                count: i+1,
-                monthlyInterestPayment: interestPayment,
-                totalInterestPaid: totalInterest,
-                monthlyPrincipalPayment: principalPayment,
-                mortgagePayment: totalPayment,
-                totalPrincipalPaid: totalPrincipal,
-                totalMortgagePaid: totalPayments,
-                balance: principal
-            };
-            i++;
-        }
-        console.log("payments array", payments);
-        return payments;
+                this.state.amortTotalCost =  mortgageParameters.paymentSchedule[amortCount-1].totalMortgagePaid
+
+            this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount-1].mortgagePayment
+      
+
     }
-    calculateMonthlyPIPayment = (loanAmount, monthlyRate, termMonths) => {
-             
-        let monthlyPayment = (monthlyRate * loanAmount * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
-        return this.roundToXDigits(monthlyPayment,2);
-    }
-    
-    
+
     render() {
         return (
             <div>
@@ -279,11 +196,6 @@ export class MortgageCalculator extends Component {
                                                <option value="5">5 year</option>
                                                <option value="15">15 year</option>
                                            </select>
-                                           {/* <select className= "form-control"> */}
-                                               {/* the data can come from an array described in state  */}
-                                               {/* <option>1 month</option> */}
-                                               {/* <option>2 month</option> */}
-                                           {/* </select> */}
                                        </div>
                                         </div>
                                     </div>
@@ -297,11 +209,12 @@ export class MortgageCalculator extends Component {
                                         <div>
                                         <select  value= {this.state.paymentFrequency} onChange= {this.onChangePaymentFrequency} className= "form-control">
                                                {/* the data can come from an array described in state  */}
-                                               <option value="52">Weekly</option>
-                                               <option value="26">Accelarated Biweekly</option>
-                                               <option value="26">Bi Weekly</option>
-                                               <option value="24">Semi Monthly</option>
-                                               <option value="12">Monthly</option>
+                                               <option value="regular_weekly">Weekly</option>
+                                               <option value="acclerated_weekly">Accelarated weekly</option>
+                                               <option value="acclerated_biweekly">Accelarated Biweekly</option>
+                                               <option value="regular_biweekly">Bi Weekly</option>
+                                               <option value="semi_monthly">Semi Monthly</option>
+                                               <option value="monthly">Monthly</option>
 
                                         </select>
                                         </div>
@@ -385,7 +298,7 @@ export class MortgageCalculator extends Component {
                         <Col lg={8} md="auto" sm={12}> 
                         <Row>
                         <div>
-                        <input type= "submit" value="Calculate..." onClick={this.calculatePayment} style={CalcButton}/>
+                        <input type= "submit" value="Calculate..." onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod,this.state.paymentFrequency)} style={CalcButton}/>
                         <div>{this.state.monthlyPayment}</div>
                         </div>
                         </Row>
@@ -394,10 +307,17 @@ export class MortgageCalculator extends Component {
                     <Row  className="justify-content-center">
                         <Col lg={8}>
                             <Summary 
-                            monthlyPayment= {this.state.monthlyPayment}
+                            amortTotalCost={this.state.amortTotalCost}
+                            termTotalCost={this.state.termTotalCost}
+                            termInterestPayements={this.state.termInterestPayements}
+                            amortInterestPayements={this.state.amortInterestPayements}
+                            mortgagePayment={this.state.mortgagePayment}
+                            termPrincipalPayments={this.state.termPrincipalPayments}
+                            amortPrincipalPayemnets={this.state.amortPrincipalPayemnets}
                             noOfPayementsTerm= {this.state.noOfPayementsTerm}
-                            summaryAmortPeriod= {this.state.summaryAmortPeriod}
+                            noOfPaymentAmortPeriod= {this.state.noOfPaymentAmortPeriod}
                             ></Summary>
+                            {this.state.sampleValue}
                             </Col>    
                     </Row>
 
