@@ -62,7 +62,7 @@ export class MortgageCalculator extends Component {
         let loanAmount=this.state.mortgageAmount
         let months=this.state.amortizationPeriod * 12
         let monthlyRate= this.state.interestRate / 1200
-        let paymentSchedule = this.calculatePaymentSchedule(loanAmount, monthlyRate, months)
+        let paymentSchedule = this.calculatePaymentScheduleWise(loanAmount, monthlyRate, months,"regular_weekly")
         let piPayment = paymentSchedule.length ? paymentSchedule[0].totalPayment : 0   
         return {
             loanAmount: loanAmount,
@@ -72,13 +72,104 @@ export class MortgageCalculator extends Component {
         };
     }
 
-    calculatePaymentSchedule = (loanAmount, monthlyRate, months) => {
+    calculate_Regular_Bi_Weekly_Payment = (monthlyPayment) => {
+        let regular_BiWeekly_Payment = (monthlyPayment * 12) /26
+        return this.roundToXDigits(regular_BiWeekly_Payment,2);
+    }
+
+    calculate_Acclerated_Bi_Weekly_Payment = (monthlyPayment) => {
+        let acclerated_BiWeekly_Payment = (monthlyPayment ) /2
+        console.log("mortgagePayment",acclerated_BiWeekly_Payment);
+        return this.roundToXDigits(acclerated_BiWeekly_Payment,2);
+    }
+
+    calculate_Acclerated_Weekly_Payment = (monthlyPayment) => {
+        let acclerated_Weekly_Payment = (monthlyPayment ) /4
+        return this.roundToXDigits(acclerated_Weekly_Payment,2);
+    }
+
+    calculate_Regular_Weekly_Payment = (monthlyPayment) => {
+        let regular_Weekly_Payment = (monthlyPayment * 12) /52
+        return this.roundToXDigits(regular_Weekly_Payment,2);
+    }
+    calculate_Acclerated_Weekly_Payment = (monthlyPayment) => {
+        let acclerated_Weekly_Payment = (monthlyPayment ) /4
+        return this.roundToXDigits(acclerated_Weekly_Payment,2);
+    }
+
+    calculate_semi_monthly_Payment = (monthlyPayment) => {
+        let semi_Monthly_Payment = (monthlyPayment ) /2
+        return this.roundToXDigits(semi_Monthly_Payment,2);
+    }
+
+    roundToXDigits = (value, digits) =>{
+        if(!digits){
+            digits = 2;
+        }
+        value = value * Math.pow(10, digits);
+        value = Math.round(value);
+        value = value / Math.pow(10, digits);
+        return value;
+    }
+
+    calculatePaymentScheduleWise = (loanAmount, monthlyRate, months, paymentFrequency) => {
+        let monthlyPayment=this.calculateMonthlyPIPayment(loanAmount, monthlyRate, months)
+        switch(paymentFrequency){
+            case 'monthly':
+               return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,monthlyPayment,"monthly");
+            case 'regular_biweekly':
+                let regular_BiWeekly_Payment= this.calculate_Regular_Bi_Weekly_Payment(monthlyPayment)
+                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,regular_BiWeekly_Payment,"regular_biweekly");
+            case 'acclerated_biweekly':
+                let acclerated_BiWeekly_Payment= this.calculate_Acclerated_Bi_Weekly_Payment(monthlyPayment)
+                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,acclerated_BiWeekly_Payment,"acclerated_biweekly");
+            case 'semi_monthly':
+                let semi_Monthly_Payment= this.calculate_semi_monthly_Payment(monthlyPayment)
+                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,semi_Monthly_Payment,"semi_monthly");
+            case 'regular_weekly':
+                let regular_Weekly_Payment= this.calculate_Regular_Weekly_Payment(monthlyPayment)
+                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,regular_Weekly_Payment,"regular_weekly");
+            case 'acclerated_weekly':
+                let acclerated_Weekly_Payment= this.calculate_Acclerated_Weekly_Payment(monthlyPayment)
+                return this.calculateMonthlyPaymentSchedule(loanAmount, monthlyRate, months,acclerated_Weekly_Payment,"acclerated_weekly");
+        }       
+    }
+    calculateMonthlyPaymentSchedule = (loanAmount, monthlyRate, months, mortgagePayment, paymentFrequency) => {
         // console.log("loan",loanAmount);
         // console.log("monthlyRate",monthlyRate);
-        // console.log("months",months);
+        //console.log("months",months);
+        console.log("mortgage payment",mortgagePayment);
+        let loopCounter=months
+        let interestDivider=1
+        switch(paymentFrequency){
+
+            case "monthly":
+                loopCounter= loopCounter * 12
+                interestDivider=1
+                break
+            case "semi_monthly":
+                loopCounter=loopCounter * 24
+                interestDivider=1/2
+                break
+            case "regular_biweekly":
+                loopCounter= loopCounter * 26
+                interestDivider= 12/26
+                break
+            case "acclerated_biweekly":
+                loopCounter= loopCounter * 26
+                interestDivider= 12/26
+                break
+            case "regular_weekly":
+                loopCounter= loopCounter * 52
+                interestDivider= 12/52
+                break
+            case "acclerated_weekly":
+                loopCounter= loopCounter * 52
+                interestDivider= 12/52
+                break
+
+        }
    
-        let monthlyPayment=this.calculateMonthlyPIPayment(loanAmount, monthlyRate, months)
-        console.log("monthly payment", monthlyPayment)
         let principal=loanAmount
         console.log("principal", principal)
         let totalInterest=0
@@ -86,21 +177,22 @@ export class MortgageCalculator extends Component {
         let totalPrincipal=0
         let i=0
         let payments = []
+        
 
-        while (principal > 0 && i < (months)) {
-            let interestPayment = principal * monthlyRate
-            let principalPayment = monthlyPayment - interestPayment 
+        while (principal > 0 && i < (loopCounter)) {
+            let interestPayment = this.roundToXDigits((principal * monthlyRate) * interestDivider,2)
+            let principalPayment = this.roundToXDigits(mortgagePayment - interestPayment,2) 
             if (principal > principalPayment) {
-                principal= principal - principalPayment
+                principal= this.roundToXDigits(principal - principalPayment,2)
             }
             else {
                 principalPayment = principal
                 principal=0
             }
-            let totalPayment = interestPayment + principalPayment; 
-            totalInterest += interestPayment;
-            totalPrincipal +=principalPayment;
-            totalPayments +=totalPayment
+            let totalPayment = this.roundToXDigits( interestPayment + principalPayment,2)
+            totalInterest = this.roundToXDigits(totalInterest+ interestPayment ,2)
+            totalPrincipal = this.roundToXDigits(totalPrincipal+ principalPayment,2)
+            totalPayments = this.roundToXDigits(totalPayments+ totalPayment,2)
             payments[i] = {
                 count: i+1,
                 monthlyInterestPayment: interestPayment,
@@ -119,8 +211,7 @@ export class MortgageCalculator extends Component {
     calculateMonthlyPIPayment = (loanAmount, monthlyRate, termMonths) => {
              
         let monthlyPayment = (monthlyRate * loanAmount * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
-      //  console.log("monthlyPayment", monthlyPayment);
-        return monthlyPayment;
+        return this.roundToXDigits(monthlyPayment,2);
     }
     
     
