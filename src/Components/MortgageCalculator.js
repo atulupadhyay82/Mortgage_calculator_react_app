@@ -147,7 +147,7 @@ export class MortgageCalculator extends Component {
         return (
             <Container>
                 <Jumbotron>
-                    <h1 style={headerDiv}>
+                    <h1 style={headerDiv} className="mortgage-calculator-header">
                                 <img src={mortgageCalc} style={calcImg}></img>
                                 <span style={headingSpan}>Mortgage Application</span>
                             </h1>
@@ -163,7 +163,7 @@ export class MortgageCalculator extends Component {
                 </Jumbotron>
                 
                 <Form >
-                    <Form.Group as={Row} controlId="mortgageAmount">
+                    <Form.Group as={Row} controlId="mortgageAmount" className="mortgageAmount">
                         <Form.Label column sm="2">
                         Mortgage Amount
                         </Form.Label>
@@ -172,7 +172,7 @@ export class MortgageCalculator extends Component {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="interestRate">
+                    <Form.Group as={Row} controlId="interestRate" className="interestRate">
                         <Form.Label column sm="2">
                         Interest Rate
                         </Form.Label>
@@ -181,11 +181,11 @@ export class MortgageCalculator extends Component {
                         </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="amortizationPeriod" >
+                    <Form.Group as={Row} controlId="amortizationPeriod" className="amortizationPeriod">
                             <Form.Label  column sm="2">Amortization Period
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" defaultValue="25" inputref={node => this.state.amortizationPeriod = node}  onChange={this.onChangeAmortizationPeriod}>
+                                <Form.Control as="select" className="amortization-period" defaultValue="25" inputref={node => this.state.amortizationPeriod = node}  onChange={this.onChangeAmortizationPeriod}>
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -220,11 +220,11 @@ export class MortgageCalculator extends Component {
                                 </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="paymentFrequency">
+                    <Form.Group as={Row} controlId="paymentFrequency" className="paymentFrequency">
                             <Form.Label  column sm="2">Payment Frequncy
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" defaultValue="monthly"  inputref={node => this.state.paymentFrequency = node}  onChange={this.onChangePaymentFrequency}>
+                                <Form.Control as="select" className="payment-frequency" defaultValue="monthly"  inputref={node => this.state.paymentFrequency = node}  onChange={this.onChangePaymentFrequency}>
                                     <option value="regular_weekly">Weekly</option>
                                     <option value="acclerated_weekly">Accelarated weekly</option>
                                     <option value="acclerated_biweekly">Accelarated Biweekly</option>
@@ -235,11 +235,11 @@ export class MortgageCalculator extends Component {
                             </Col>
                     </Form.Group>
 
-                    <Form.Group as={Row} controlId="term" >
+                    <Form.Group as={Row} controlId="term" className="term" >
                             <Form.Label  column sm="2">Term
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" defaultValue="5"  inputref={node => this.state.term = node} onChange={this.onChangeTerm} >                          
+                                <Form.Control as="select" className= "term-select" defaultValue="5"  inputref={node => this.state.term = node} onChange={this.onChangeTerm} >                          
                                      <option value="1">1 Year</option>
                                      <option value="2">2 Year</option>
                                      <option value="3">3 Year</option>
@@ -250,7 +250,7 @@ export class MortgageCalculator extends Component {
                     </Form.Group>
                    
                         <Col sm="4">
-                            <Button  onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod,this.state.paymentFrequency)}>
+                            <Button className="calculate-button" onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod,this.state.paymentFrequency)}>
                                 Calculate
                             </Button>
                         </Col>
