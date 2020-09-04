@@ -5,7 +5,7 @@ export class Summary extends Component {
     render() {
         return (
             <div>
-           <Row className="justify-content-md-center">
+           <Row className="calculation-summary justify-content-md-center">
                <Col lg={12} md= {12}>
                    <strong> Calculation Summary</strong>
                     <Table striped bordered hover size="lg" responsive>
@@ -19,79 +19,38 @@ export class Summary extends Component {
                         <tbody>
                             <tr>
                             <td>Number of Payments</td>
-                            <td>{this.props.noOfPayementsTerm}</td>
-                            <td>{this.props.summaryAmortPeriod}</td>
+                            <td className="term-payments">{this.props.noOfPayementsTerm}</td>
+                            <td className= "amort-payments">{this.props.noOfPaymentAmortPeriod}</td>
                             </tr>
                             <tr>
                             <td>Mortgage Payment</td>
-                            <td>{this.props.monthlyPayment}</td>
-                            <td>{this.props.monthlyPayment}</td>
+                            <td className= "term-mortgage">{this.props.mortgagePayment}</td>
+                            <td className= "amort-mortgage">{this.props.mortgagePayment}</td>
                             </tr>
                             <tr>
                             <td>Principal Payments</td>
-                            <td>Some value</td>
-                            <td>Sample value</td>
+                            <td className="term-principal">{this.props.termPrincipalPayments}</td>
+                            <td className="amort-principal">{this.props.amortPrincipalPayemnets}</td>
                             </tr>
                             <tr>
                             <td>Interest Payments</td>
-                            <td>Some value</td>
-                            <td>Sample value</td>
+                            <td className= "term-interest">{this.props.termInterestPayements}</td>
+                            <td className= "amort-interest">{this.props.amortInterestPayements}</td>
                             </tr>
                             <tr>
                             <td>Total Cost</td>
-                            <td>Some value</td>
-                            <td>{}</td>
+                            <td className= "term-total-cost">{this.props.termTotalCost}</td>
+                            <td className= "amort-total-cost">{this.props.amortTotalCost}</td>
                             </tr>
                         </tbody>
                     </Table>
 
                </Col>
            </Row>
-           <Row>
-            <Col lg={12}>
-            <h2><strong>Mortgage Summary</strong></h2>
-            </Col>
-           </Row>
-           <Row>
-          
-           <p>Over the 25-year amortization period, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have made <strong></strong> monthly (12x per year) payments of <strong></strong></li>
-           <li style={listStyle}>have paid $<strong></strong> in principal, $<strong></strong> in interest, for a total of $<strong></strong>.</li>
-           </ul>
-           </Row>
-          
-           <Row>
-              
-           <p>Over the 5-year term, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have made <strong></strong> monthly (12x per year) payments of <strong></strong></li>
-           <li style={listStyle}>have paid $<strong></strong> in principal, $<strong></strong> in interest, for a total of $<strong></strong>.</li>
-           </ul>
-           
-           </Row>
-           <Row>
-              
-           <p>At the end of your 5-year term, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have a balance of $<strong></strong></li>
-           </ul>
-           
-           </Row>
-            
+                    
            </div>
         )
     }
-}
-
-const listStyle ={
-    //marginLeft: '100px'
 }
 
 export default Summary
