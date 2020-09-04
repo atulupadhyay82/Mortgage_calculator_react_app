@@ -7,13 +7,13 @@ export class Summary extends Component {
             <div>
            <Row className="calculation-summary justify-content-md-center">
                <Col lg={12} md= {12}>
-                   <strong> Calculation Summary</strong>
+                   <p><h3> Calculation Summary</h3></p>
                     <Table striped bordered hover size="lg" responsive>
                         <thead>
                             <tr>
-                                <th> <strong>Category</strong></th>
-                                <th> <strong>Term</strong></th>
-                                <th> <strong>Amortization Period</strong></th>
+                                <th> Category</th>
+                                <th> Term</th>
+                                <th> Amortization Period</th>
                             </tr>
                            </thead> 
                         <tbody>

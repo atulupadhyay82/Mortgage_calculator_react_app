@@ -173,8 +173,13 @@ export class MortgageCalculator extends Component {
                         Mortgage Amount
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control  inputref={node => this.state.mortgageAmount = node}  onChange={this.onChangeMortgageAmount} placeholder="100000.00" required/>
-                        {/* <input type="text" defaultValue="265000" value= {this.state.mortgageAmount}  onChange={this.onChangeMortgageAmount} defaultValue="265000"/> */}
+                        <Form.Control  inputref={node => this.state.mortgageAmount = node} 
+                         onChange={this.onChangeMortgageAmount}
+                         placeholder="100000.00"
+                         onKeyPress={this.limitCharacterInput}
+                         autoComplete="off"
+                         required/>
+                       
                         </Col>
                     </Form.Group>
 
@@ -183,7 +188,12 @@ export class MortgageCalculator extends Component {
                         Interest Rate
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control   placeholder="5.00"  inputref={node => this.state.interestRate = node} onChange={this.onChangeInterestRate} required/>
+                        <Form.Control  placeholder="5.00"  
+                        inputref={node => this.state.interestRate = node} 
+                        onChange={this.onChangeInterestRate}
+                        onKeyPress={this.limitCharacterInput}
+                        autoComplete="off"
+                        required/>
                         </Col>
                     </Form.Group>
 
