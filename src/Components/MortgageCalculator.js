@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Bootstrap, Grid, Row, Col} from 'react-bootstrap';
+import {Bootstrap, Grid, Row, Col,FormControl,Form,Button} from 'react-bootstrap';
 import mortgageCalc from '../Img/mortgageCalc.jpg';
 import questionMark from '../Img/question-mark.png';
 import Summary from './Summary';
@@ -42,6 +42,11 @@ export class MortgageCalculator extends Component {
             //calculatePaymentSchedule:Algorithm.calculatePaymentSchedule
         }
     }
+
+    componentDidMount() {
+        //this.state.mortgageAmount.value;
+        
+      } 
 
     onChangeMortgageAmount = (e) => {
         this.setState({
@@ -86,38 +91,22 @@ export class MortgageCalculator extends Component {
         let mortgageParameters=Algorithm.calculatePayment(mortgagenAmount, interestRate, amortizationPeriod)
         let termCount= this.state.term * this.state.paymentFrequency
         let amortCount = this.state.amortizationPeriod * this.state.paymentFrequency
-       
-        //mortgageParameters.paymentSchedule.map((element) => {
-            //console.log("element",element);
-           
+
                 this.state.termPrincipalPayments = mortgageParameters.paymentSchedule[termCount-1].totalPrincipalPaid
-                console.log("totalPrincipalPaid",this.state.termPrincipalPayments);
-            
-           
-                this.state.amortPrincipalPayemnets = mortgageParameters.paymentSchedule[amortCount-1].totalPrincipalPaid
-            
+                console.log("totalPrincipalPaid",this.state.termPrincipalPayments);            
+                this.state.amortPrincipalPayemnets = mortgageParameters.paymentSchedule[amortCount-1].totalPrincipalPaid           
                 this.state.termInterestPayements = mortgageParameters.paymentSchedule[termCount-1].totalInterestPaid
-            
-           
                 this.state.amortInterestPayements = mortgageParameters.paymentSchedule[amortCount-1].totalInterestPaid
-            
                 this.state.termTotalCost = mortgageParameters.paymentSchedule[termCount-1].totalMortgagePaid
-
                 this.state.amortTotalCost =  mortgageParameters.paymentSchedule[amortCount-1].totalMortgagePaid
-
-            this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount-1].mortgagePayment
-        //})
-        //this.state.mortgagePayment = mortgageParameters
-       
-        //console.log("fetched", this.state.mortgagePayment)
-      
+                this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount-1].mortgagePayment
 
     }
 
     render() {
         return (
             <div>
-                    <Row  className="justify-content-md-center">
+                    <Row  className="mortgage-calculator-header justify-content-md-center">
                    <Col lg={8} md="auto" sm={12}>     
                    <h1 style= {headerDiv}>
                      <img src={mortgageCalc} style={calcImg}></img> 
@@ -146,10 +135,17 @@ export class MortgageCalculator extends Component {
                                        <input type= "image" src= {questionMark} style={helpIcon}></input>
                                         <label className= "card-text"><strong>Mortgage Amount:</strong></label>
                                         </div>
-                                        <div>
-                                        <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text" placeholder="100,000.00" value = {this.state.mortgageAmount}  onChange= {this.onChangeMortgageAmount} maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
-                                        </div>
+                                        {/* <div> */}
+                                        {/* <span className="input-group-addon" style={moneyIcon}>$</span> */}
+                                        <Form.Group as={Row} >
+                                            <Form.Label column sm="2">
+                                                Mortgage Amount
+                                            </Form.Label>   
+                                        <Form.Control inputRef={node => this.state.mortgageAmount = node}  onChange= {this.onChangeMortgageAmount} placeholder="100000"></Form.Control>
+                                           
+                                        </Form.Group>
+                                        {/* <input type="text" placeholder="100,000.00" value = {this.state.mortgageAmount}  onChange= {this.onChangeMortgageAmount} maxlength="20" className="form-control" allowzero="false" style={inputField}></input> */}
+                                        {/* </div> */}
                                     </div>
                                     </Row>
                                     <Row style= {datafieldsRow}>
@@ -159,8 +155,15 @@ export class MortgageCalculator extends Component {
                                         <label className= "card-text"><strong>Interest Rate:</strong></label>
                                         </div>
                                         <div>
-                                        <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text"  placeholder="5.00f em" value = {this.state.interestRate} onChange= {this.onChangeInterestRate} maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
+                                        {/* <span className="input-group-addon" style={moneyIcon}>$</span>
+                                        <input type="text"  placeholder="5.00f em" value = {this.state.interestRate} onChange= {this.onChangeInterestRate} maxlength="20" className="form-control" allowzero="false" style={inputField}></input> */}
+                                         <Form.Group as={Row} >
+                                            <Form.Label column sm="2">
+                                            Interest Rate
+                                            </Form.Label>   
+                                        <Form.Control inputRef={node => this.state.interestRate = node}  onChange= {this.onChangeInterestRate} placeholder="100000"></Form.Control>
+                                           
+                                        </Form.Group>
                                         </div>
                                     </div>
                                     </Row>
@@ -172,7 +175,7 @@ export class MortgageCalculator extends Component {
                                         </div>
                                         <div>
                                        <div>
-                                           <select className= "form-control" value= {this.state.amortizationPeriod} onChange= {this.onChangeAmortizationPeriod}>
+                                           <select className= "amortization-period form-control" value= {this.state.amortizationPeriod} onChange= {this.onChangeAmortizationPeriod}>
                                                {/* the data can come from an array described in state  */}
                                                <option value="1">1 year</option>
                                                <option value="5">5 year</option>
@@ -189,7 +192,7 @@ export class MortgageCalculator extends Component {
                                         <label className= "card-text"><strong>Payment Frequency:</strong></label>
                                         </div>
                                         <div>
-                                        <select  value= {this.state.paymentFrequency} onChange= {this.onChangePaymentFrequency} className= "form-control">
+                                        <select  value= {this.state.paymentFrequency} onChange= {this.onChangePaymentFrequency} className= "payment-frequency form-control">
                                                {/* the data can come from an array described in state  */}
                                                <option value="52">Weekly</option>
                                                <option value="26">Accelarated Biweekly</option>
@@ -208,7 +211,7 @@ export class MortgageCalculator extends Component {
                                         <label className= "card-text"><strong>Term:</strong></label>
                                         </div>
                                         <div>
-                                        <select className= "form-control" value={this.state.term} onChange={this.onChangeTerm}>
+                                        <select className= "term-select form-control" value={this.state.term} onChange={this.onChangeTerm}>
                                                {/* the data can come from an array described in state  */}
                                                <option value="1">1 Year</option>
                                                <option value="2">2 Year</option>
@@ -225,61 +228,11 @@ export class MortgageCalculator extends Component {
 
                         </section>
                     </Col>
-                    <Col lg={4} md={4}> <section className= "panel panel-primary">
-                            <header className= "card-heading">
-                                <h3 className= "card-title" style={cardTitle}>Prepayment Plan</h3>
-                                <div className= "card-body">
-                                    <Row style= {datafieldsRow}>
-                                    <div className= "prePaymentAmount">
-                                        <div style={dataDiv}>
-                                       <input type= "image" src= {questionMark} style={helpIcon}></input>
-                                        <label className= "card-text"><strong>Prepayment Amount:</strong></label>
-                                        </div>
-                                        <div>
-                                        <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text" placeholder="0.00" maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
-                                        </div>
-                                    </div>
-                                    </Row>
-                                    <Row style= {datafieldsRow}>
-                                    <div className= "prepaymentFrequency">
-                                        <div style={dataDiv}>
-                                        <input type= "image" src= {questionMark} style={helpIcon}></input>
-                                        <label className= "card-text"><strong>Prepayment Frequency:</strong></label>
-                                        </div>
-                                        <div>
-                                        <select className= "form-control">
-                                               {/* the data can come from an array described in state  */}
-                                               <option>One Time</option>
-                                               <option>Each Year</option>
-                                               <option>Same as regular payement</option>
-
-                                        </select>
-                                        </div>
-                                    </div>
-                                    </Row>
-                                    <Row style= {datafieldsRow}>
-                                    <div className= "startWithPayment">
-                                        <div style={dataDiv}>
-                                        <input type= "image" src= {questionMark} style={helpIcon}></input>
-                                        <label className= "card-text"><strong>Start With Payment:</strong></label>
-                                        </div>
-                                        <div>
-                                        <span className="input-group-addon" style={moneyIcon}>$</span>
-                                        <input type="text" placeholder="1" maxlength="20" className="form-control" allowzero="false" style={inputField}></input>
-                                        </div>
-                                    </div>
-                                    </Row>
-                                    
-                                </div>
-                            </header>
-
-                        </section>
-                        </Col>
                         <Col lg={8} md="auto" sm={12}> 
                         <Row>
                         <div>
-                        <input type= "submit" value="Calculate..." onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod)} style={CalcButton}/>
+                        {/* <input type= "submit" className="calculate-button" value="Calculate..." onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod)} style={CalcButton}/> */}
+                        <Button type= "submit" onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod)}>Calculate</Button>
                         <div>{this.state.monthlyPayment}</div>
                         </div>
                         </Row>

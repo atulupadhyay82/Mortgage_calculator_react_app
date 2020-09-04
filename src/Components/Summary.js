@@ -5,7 +5,7 @@ export class Summary extends Component {
     render() {
         return (
             <div>
-           <Row className="justify-content-md-center">
+           <Row className="calculation-summary justify-content-md-center">
                <Col lg={12} md= {12}>
                    <strong> Calculation Summary</strong>
                     <Table striped bordered hover size="lg" responsive>
@@ -19,28 +19,28 @@ export class Summary extends Component {
                         <tbody>
                             <tr>
                             <td>Number of Payments</td>
-                            <td>{this.props.noOfPayementsTerm}</td>
-                            <td>{this.props.noOfPaymentAmortPeriod}</td>
+                            <td className="term-payments">{this.props.noOfPayementsTerm}</td>
+                            <td className= "amort-payments">{this.props.noOfPaymentAmortPeriod}</td>
                             </tr>
                             <tr>
                             <td>Mortgage Payment</td>
-                            <td>{this.props.mortgagePayment}</td>
-                            <td>{this.props.mortgagePayment}</td>
+                            <td className= "term-mortgage">{this.props.mortgagePayment}</td>
+                            <td className= "amort-mortgage">{this.props.mortgagePayment}</td>
                             </tr>
                             <tr>
                             <td>Principal Payments</td>
-                            <td>{this.props.termPrincipalPayments}</td>
-                            <td>{this.props.amortPrincipalPayemnets}</td>
+                            <td className="term-principal">{this.props.termPrincipalPayments}</td>
+                            <td className="amort-principal">{this.props.amortPrincipalPayemnets}</td>
                             </tr>
                             <tr>
                             <td>Interest Payments</td>
-                            <td>{this.props.termInterestPayements}</td>
-                            <td>{this.props.amortInterestPayements}</td>
+                            <td className= "term-interest">{this.props.termInterestPayements}</td>
+                            <td className= "amort-interest">{this.props.amortInterestPayements}</td>
                             </tr>
                             <tr>
                             <td>Total Cost</td>
-                            <td>{this.props.termTotalCost}</td>
-                            <td>{this.props.amortTotalCost}</td>
+                            <td className= "term-total-cost">{this.props.termTotalCost}</td>
+                            <td className= "amort-total-cost">{this.props.amortTotalCost}</td>
                             </tr>
                         </tbody>
                     </Table>
