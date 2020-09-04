@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Bootstrap, Grid, Row,Jumbotron , Container, Form, Button, Col } from 'react-bootstrap';
+import { Bootstrap, Grid, Row,Jumbotron , Container, Form, Button, Col,InputGroup } from 'react-bootstrap';
 import mortgageCalc from '../Img/mortgageCalc.jpg';
 import questionMark from '../Img/question-mark.png';
 import Summary from './Summary';
@@ -136,16 +136,16 @@ export class MortgageCalculator extends Component {
             this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount - 1].mortgagePayment
     
          }
-        // else{
-        //     alert('empty fields');
-        // }
-      
-
+ 
     }
-
-    sampleTest =(mortgageAmount) =>{
-        console.log("mor",mortgageAmount)
-    }
+		
+    limitInputCharacter(e) {
+        const re = /[0-9.:]+/g;
+        if (!re.test(e.key)) {
+          e.preventDefault();
+        }
+      }
+	  
      
 
     render() {
@@ -173,13 +173,17 @@ export class MortgageCalculator extends Component {
                         Mortgage Amount
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control  inputref={node => this.state.mortgageAmount = node} 
-                         onChange={this.onChangeMortgageAmount}
-                         placeholder="100000.00"
-                         onKeyPress={this.limitCharacterInput}
-                         autoComplete="off"
-                         required/>
-                       
+                        <InputGroup>
+                            <InputGroup.Prepend>
+                            <InputGroup.Text id="inputGroupPrepend">$</InputGroup.Text>
+                        </InputGroup.Prepend>
+                            <Form.Control  inputref={node => this.state.mortgageAmount = node} 
+                            onChange={this.onChangeMortgageAmount}
+                            placeholder="100000.00"
+                            onKeyPress={(e) => this.limitInputCharacter(e)}
+                            autoComplete="off"
+                            required/>
+                        </InputGroup>
                         </Col>
                     </Form.Group>
 
@@ -188,12 +192,17 @@ export class MortgageCalculator extends Component {
                         Interest Rate
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control  placeholder="5.00"  
-                        inputref={node => this.state.interestRate = node} 
-                        onChange={this.onChangeInterestRate}
-                        onKeyPress={this.limitCharacterInput}
-                        autoComplete="off"
-                        required/>
+                        <InputGroup>
+                            <Form.Control  placeholder="5.00"  
+                            inputref={node => this.state.interestRate = node} 
+                            onChange={this.onChangeInterestRate}
+                            onKeyPress={(e) => this.limitInputCharacter(e)}
+                            autoComplete="off"
+                            required/>
+                        <InputGroup.Prepend>
+                                <InputGroup.Text id="inputGroupPrepend">%</InputGroup.Text>
+                            </InputGroup.Prepend>
+                        </InputGroup>
                         </Col>
                     </Form.Group>
 
@@ -285,11 +294,10 @@ export class MortgageCalculator extends Component {
                                 termPrincipalPayments={this.state.termPrincipalPayments}
                                 amortPrincipalPayemnets={this.state.amortPrincipalPayemnets}
                                 noOfPayementsTerm={this.state.noOfPayementsTerm}
-                                noOfPaymentAmortPeriod={this.state.noOfPaymentAmortPeriod}
-                            >
+                                noOfPaymentAmortPeriod={this.state.noOfPaymentAmortPeriod}>
 
-                            </Summary>
-                            </Form>              
+                </Summary>
+            </Form>              
               
             </Container>
         )
