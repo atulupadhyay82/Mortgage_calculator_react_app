@@ -7,24 +7,18 @@ import CalculatorLogic from '../CalculatorLogic';
 
 export class MortgageCalculator extends Component {
 
-    // componentDidMount() {
-    //     this.inputNode.value;
-    //   }
-
     constructor() {
         super()
-
-     
 
         this.state = {
             mortgageAmount: '',
             interestRate: '',
             amortizationPeriod: '',
             paymentFrequency: '',
-            term: 1,
+            term: '',
             prePaymentAmount: '',
             prePayementFrequency: '',
-            startPayemnt: 1,
+            startPayemnt: '',
             monthlyInterestRate: '',
             termMonths: '',
             monthlyRate: '',
@@ -99,42 +93,57 @@ export class MortgageCalculator extends Component {
         }
 
     }
+    submitHandler = event => {
+        event.preventDefault();
+        event.target.className += " was-validated";
+      };
 
     calculateMortgage = (mortgagenAmount, interestRate, amortizationPeriod, paymentFrequency) => {
+        if(this.state.mortgageAmount==null || this.state.mortgageAmount==undefined)
+        {
+            alert("mortgage amount is empty");
+        }
         console.log("mortgage Amount", "HI")
-        let mortgageParameters = CalculatorLogic.calculatePayment(mortgagenAmount, interestRate, amortizationPeriod, paymentFrequency)
-        let termCount = this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
-        let amortCount = mortgageParameters.paymentSchedule.length
+         if(this.state.mortgageAmount && this.state.interestRate && this.state.amortizationPeriod && this.state.paymentFrequency && this.state.term && (this.state.amortizationPeriod>=this.state.term)){
 
-        this.setState({
-            noOfPayementsTerm: this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
-        })
-        // this.setState({
-        //     noOfPaymentAmortPeriod: this.state.amortizationPeriod * this.paymentFrequencyCount(this.state.paymentFrequency)
-        // })
-
-        this.setState({
-            noOfPaymentAmortPeriod: amortCount
-        })
-        console.log("term count", termCount);
-        console.log("amort count", amortCount);
-        this.state.termPrincipalPayments = mortgageParameters.paymentSchedule[termCount - 1].totalPrincipalPaid
-        console.log("totalPrincipalPaid", this.state.termPrincipalPayments);
-
-
-        this.state.amortPrincipalPayemnets = mortgageParameters.paymentSchedule[amortCount - 1].totalPrincipalPaid
-
-        this.state.termInterestPayements = mortgageParameters.paymentSchedule[termCount - 1].totalInterestPaid
-
-
-        this.state.amortInterestPayements = mortgageParameters.paymentSchedule[amortCount - 1].totalInterestPaid
-
-        this.state.termTotalCost = mortgageParameters.paymentSchedule[termCount - 1].totalMortgagePaid
-
-        this.state.amortTotalCost = mortgageParameters.paymentSchedule[amortCount - 1].totalMortgagePaid
-
-        this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount - 1].mortgagePayment
-
+            let mortgageParameters = CalculatorLogic.calculatePayment(mortgagenAmount, interestRate, amortizationPeriod, paymentFrequency)
+            let termCount = this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
+            let amortCount = mortgageParameters.paymentSchedule.length
+    
+            this.setState({
+                noOfPayementsTerm: this.state.term * this.paymentFrequencyCount(this.state.paymentFrequency)
+            })
+            // this.setState({
+            //     noOfPaymentAmortPeriod: this.state.amortizationPeriod * this.paymentFrequencyCount(this.state.paymentFrequency)
+            // })
+    
+            this.setState({
+                noOfPaymentAmortPeriod: amortCount
+            })
+            console.log("term count", termCount);
+            console.log("amort count", amortCount);
+            this.state.termPrincipalPayments = mortgageParameters.paymentSchedule[termCount - 1].totalPrincipalPaid
+            console.log("totalPrincipalPaid", this.state.termPrincipalPayments);
+    
+    
+            this.state.amortPrincipalPayemnets = mortgageParameters.paymentSchedule[amortCount - 1].totalPrincipalPaid
+    
+            this.state.termInterestPayements = mortgageParameters.paymentSchedule[termCount - 1].totalInterestPaid
+    
+    
+            this.state.amortInterestPayements = mortgageParameters.paymentSchedule[amortCount - 1].totalInterestPaid
+    
+            this.state.termTotalCost = mortgageParameters.paymentSchedule[termCount - 1].totalMortgagePaid
+    
+            this.state.amortTotalCost = mortgageParameters.paymentSchedule[amortCount - 1].totalMortgagePaid
+    
+            this.state.mortgagePayment = mortgageParameters.paymentSchedule[termCount - 1].mortgagePayment
+    
+         }
+        // else{
+        //     alert('empty fields');
+        // }
+      
 
     }
 
@@ -162,13 +171,14 @@ export class MortgageCalculator extends Component {
                             <p> <strong>Note:</strong> As of July 9, 2012, the maximum amortization period for mortgages with less than a 20 percent down payment is <strong>25 years</strong></p>
                 </Jumbotron>
                 
-                <Form >
+                <Form onSubmit={this.submitHandler} noValidate>
                     <Form.Group as={Row} controlId="mortgageAmount" className="mortgageAmount">
                         <Form.Label column sm="2">
                         Mortgage Amount
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control  inputref={node => this.state.mortgageAmount = node}  onChange={this.onChangeMortgageAmount} placeholder="100000.00" />
+                        <Form.Control  inputref={node => this.state.mortgageAmount = node}  onChange={this.onChangeMortgageAmount} placeholder="100000.00" required/>
+                        {/* <input type="text" defaultValue="265000" value= {this.state.mortgageAmount}  onChange={this.onChangeMortgageAmount} defaultValue="265000"/> */}
                         </Col>
                     </Form.Group>
 
@@ -177,7 +187,7 @@ export class MortgageCalculator extends Component {
                         Interest Rate
                         </Form.Label>
                         <Col sm="10">
-                        <Form.Control   placeholder="5.00"  inputref={node => this.state.interestRate = node} onChange={this.onChangeInterestRate} />
+                        <Form.Control   placeholder="5.00"  inputref={node => this.state.interestRate = node} onChange={this.onChangeInterestRate} required/>
                         </Col>
                     </Form.Group>
 
@@ -185,7 +195,8 @@ export class MortgageCalculator extends Component {
                             <Form.Label  column sm="2">Amortization Period
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" className="amortization-period" defaultValue="25" inputref={node => this.state.amortizationPeriod = node}  onChange={this.onChangeAmortizationPeriod}>
+                                <Form.Control as="select" className="amortization-period"  inputref={node => this.state.amortizationPeriod = node}  onChange={this.onChangeAmortizationPeriod} required>
+                                <option value="">Select Amortization Period</option>
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -217,6 +228,7 @@ export class MortgageCalculator extends Component {
                                     <option>29</option>
                                     <option>30</option>
                                 </Form.Control>
+                                {this.state.amortizationPeriod<this.state.term ? <strong style={validationError}>The amortization period must be equal to or greater than the term.</strong> : ''}
                                 </Col>
                     </Form.Group>
 
@@ -224,7 +236,8 @@ export class MortgageCalculator extends Component {
                             <Form.Label  column sm="2">Payment Frequncy
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" className="payment-frequency" defaultValue="monthly"  inputref={node => this.state.paymentFrequency = node}  onChange={this.onChangePaymentFrequency}>
+                                <Form.Control as="select" className="payment-frequency"  inputref={node => this.state.paymentFrequency = node}  onChange={this.onChangePaymentFrequency} required>
+                                    <option value="">Select Payement Frequency</option>
                                     <option value="regular_weekly">Weekly</option>
                                     <option value="acclerated_weekly">Accelarated weekly</option>
                                     <option value="acclerated_biweekly">Accelarated Biweekly</option>
@@ -239,7 +252,8 @@ export class MortgageCalculator extends Component {
                             <Form.Label  column sm="2">Term
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Control as="select" className= "term-select" defaultValue="5"  inputref={node => this.state.term = node} onChange={this.onChangeTerm} >                          
+                                <Form.Control as="select" className= "term-select"  inputref={node => this.state.term = node} onChange={this.onChangeTerm} required>  
+                                    <option value="">Select Term</option>                        
                                      <option value="1">1 Year</option>
                                      <option value="2">2 Year</option>
                                      <option value="3">3 Year</option>
@@ -249,13 +263,13 @@ export class MortgageCalculator extends Component {
                             </Col>
                     </Form.Group>
                    
-                        <Col sm="4">
-                            <Button className="calculate-button" onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod,this.state.paymentFrequency)}>
+                        <Col sm="2">
+                            <button type="submit" style= {styleButton} className="calculate-button" onClick={() => this.calculateMortgage(this.state.mortgageAmount,this.state.interestRate, this.state.amortizationPeriod,this.state.paymentFrequency)}>
                                 Calculate
-                            </Button>
+                            </button>
                         </Col>
                    
-                </Form>
+                
                 <Summary
                                 amortTotalCost={this.state.amortTotalCost}
                                 termTotalCost={this.state.termTotalCost}
@@ -269,6 +283,7 @@ export class MortgageCalculator extends Component {
                             >
 
                             </Summary>
+                            </Form>              
               
             </Container>
         )
@@ -286,48 +301,15 @@ const headerDiv = {
     borderBottomStyle: 'solid',
     borderBottomColor: '#DC143C'
 }
-// const helpIcon = {
-//     height: '20px',
+const validationError = {
+    color: 'red'
+}
 
-// }
-// const moneyIcon = {
-//     padding: '10px 14px',
-//     fontSize: '16px',
-//     fontWeight: '400',
-//     lineHeight: '1',
-//     color: '#555',
-//     textAlign: 'center',
-//     backgroundColor: '#eee',
-//     border: '1px solid #ccc',
-//     borderRadius: '4px',
-//     float: 'left',
-//     borderTopRightRadius: '0',
-//     borderBottomRightRadius: '0'
-// }
-// const inputField = {
-//     position: 'relative',
-//     zIndex: '2',
-//     float: 'left',
-//     marginBottom: '0',
-//     width: '252px',
-
-// }
-// const dataDiv = {
-//     //marginRight: '285px'
-
-//     textAlign: 'start'
-// }
-// const datafieldsRow = {
-//     marginBottom: '10px'
-// }
-// const cardTitle = {
-//     textAlign: 'start'
-// }
-// const CalcButton = {
-//     backgroundColor: '#335075',
-//     color: 'white',
-//     marginBottom: '10px',
-//     marginTop: '10px'
-// }
+const styleButton = {
+    backgroundColor: '#335075',
+    color: 'white',
+    marginBottom: '10px',
+    marginTop: '10px'
+}
 
 export default MortgageCalculator
