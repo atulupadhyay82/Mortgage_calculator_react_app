@@ -47,51 +47,10 @@ export class Summary extends Component {
 
                </Col>
            </Row>
-           <Row>
-            <Col lg={12}>
-            <h2><strong>Mortgage Summary</strong></h2>
-            </Col>
-           </Row>
-           <Row>
-          
-           <p>Over the 25-year amortization period, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have made <strong></strong> monthly (12x per year) payments of <strong></strong></li>
-           <li style={listStyle}>have paid $<strong></strong> in principal, $<strong></strong> in interest, for a total of $<strong></strong>.</li>
-           </ul>
-           </Row>
-          
-           <Row>
-              
-           <p>Over the 5-year term, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have made <strong></strong> monthly (12x per year) payments of <strong></strong></li>
-           <li style={listStyle}>have paid $<strong></strong> in principal, $<strong></strong> in interest, for a total of $<strong></strong>.</li>
-           </ul>
-           
-           </Row>
-           <Row>
-              
-           <p>At the end of your 5-year term, you will:</p>
-           </Row>
-           <Row>
-           <ul>
-           <li style={listStyle}>have a balance of $<strong></strong></li>
-           </ul>
-           
-           </Row>
-            
+                    
            </div>
         )
     }
-}
-
-const listStyle ={
-    //marginLeft: '100px'
 }
 
 export default Summary
